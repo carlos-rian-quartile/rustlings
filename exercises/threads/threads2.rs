@@ -7,28 +7,35 @@
 
 use std::sync::Arc;
 use std::thread;
+use std::rc::Rc;
 use std::time::Duration;
+use std::sync::Mutex;
 
+#[derive(Debug)]
 struct JobStatus {
     jobs_completed: u32,
 }
 
 fn main() {
-    let status = Arc::new(JobStatus { jobs_completed: 0 });
+    let status = Arc::new(Mutex::new(JobStatus { jobs_completed: 0 }));
     let mut handles = vec![];
     for _ in 0..10 {
+        // create clone of status
         let status_shared = status.clone();
+        // create thread to run unwrap.completed += 1
         let handle = thread::spawn(move || {
             thread::sleep(Duration::from_millis(250));
-            // TODO: You must take an action before you update a shared value
-            status_shared.jobs_completed += 1;
+            // increment more 1 in job_completed
+            status_shared.lock().unwrap().jobs_completed += 1;
         });
+        // add process to status arc.
         handles.push(handle);
     }
     for handle in handles {
         handle.join().unwrap();
         // TODO: Print the value of the JobStatus.jobs_completed. Did you notice anything
         // interesting in the output? Do you have to 'join' on all the handles?
-        println!("jobs completed {}", ???);
+        // use the .lock to blocking the code in this point and take the owner to print.
+        println!("jobs completed {:?}", *status.lock().unwrap());
     }
 }
