@@ -28,7 +28,7 @@ enum IntoColorError {
 // and return an Ok result of inner type Color.
 // You need to create an implementation for a tuple of three integers,
 // an array of three integers, and a slice of integers.
-//
+// yes
 // Note that the implementation for tuple and array will be checked at compile time,
 // but the slice implementation needs to check the slice length!
 // Also note that correct RGB color values must be integers in the 0..=255 range.
