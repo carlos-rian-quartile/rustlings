@@ -35,13 +35,19 @@ impl Default for Person {
 // If while parsing the age, something goes wrong, then return the default of Person
 // Otherwise, then return an instantiated Person object with the results
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Self {
         let val: Vec<&str> = s.split(",").collect();
-        println!("{:?} {}", val, val.len());
-        if val.get(0).contains(x: &U) {
+        let try_parse = match val.get(1) {
+            Some(v) => match v.parse::<usize>() {
+                Ok(_) => false,
+                Err(_) => true
+            },
+            None => true
+        };
+        let validation = vec![val.len() != 2, val.get(0) == Some(&""), val.get(1) == Some(&""), try_parse].into_iter().filter(|x| x == &true).count();
+
+        if validation >= 1 {
             Self::default()
         } else {
             Self {
