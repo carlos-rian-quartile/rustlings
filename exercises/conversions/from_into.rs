@@ -12,8 +12,8 @@ struct Person {
 // We implement the Default trait to use it as a fallback
 // when the provided string is not convertible into a Person object
 impl Default for Person {
-    fn default() -> Person {
-        Person {
+    fn default() -> Self {
+        Self {
             name: String::from("John"),
             age: 30,
         }
@@ -38,7 +38,17 @@ impl Default for Person {
 // I AM NOT DONE
 
 impl From<&str> for Person {
-    fn from(s: &str) -> Person {
+    fn from(s: &str) -> Self {
+        let val: Vec<&str> = s.split(",").collect();
+        println!("{:?} {}", val, val.len());
+        if val.get(0).contains(x: &U) {
+            Self::default()
+        } else {
+            Self {
+                name: String::from(val[0]),
+                age:  val[1].parse::<usize>().unwrap()
+            }
+        }
     }
 }
 
