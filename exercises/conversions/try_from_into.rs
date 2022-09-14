@@ -34,23 +34,23 @@ enum IntoColorError {
 // but the slice implementation needs to check the slice length!
 // Also note that correct RGB color values must be integers in the 0..=255 range.
 
-fn check(items: &[i16]) -> Result(_, IntoColorError) {
+fn check(items: &[i16]) -> Result<(), IntoColorError> {
+    if items.len() != 3 {
+        return Err(IntoColorError::BadLen);
+    }
     for item in items.iter() {
-        if item < 0 || item > 255 {
+        if item < &0 || item > &255 {
             return Err(IntoColorError::IntConversion);
         }
     }
+    Ok(())
 }
 
 // Tuple implementation
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self,  Self::Error> {
-        for item in [tuple.0, tuple.1, tuple.2] {
-            if item < 0 || item > 255 {
-                return Err(IntoColorError::IntConversion);
-            }
-        }
+        check(&[tuple.0, tuple.1, tuple.2])?;
         Ok(Self {
             red: tuple.0 as u8, 
             green: tuple.1 as u8, 
@@ -63,20 +63,12 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
-        if arr.len() != 3 {
-            Err(IntoColorError::BadLen)
-        } else {
-            for item in arr.iter() {
-                if item < &0 || item > &255 {
-                    return Err(IntoColorError::IntConversion);
-                }
-            }
-            Ok(Self {
-                red: arr[0] as u8, 
-                green: arr[1] as u8, 
-                blue: arr[2] as u8
-            })
-        }
+        check(&arr)?;
+        Ok(Self {
+            red: arr[0] as u8, 
+            green: arr[1] as u8, 
+            blue: arr[2] as u8
+        })
     }
 }
 
@@ -84,21 +76,12 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
-        if slice.len() != 3 {
-            Err(IntoColorError::BadLen)
-        } else {
-            for item in slice.iter() {
-                if item < &0 || item > &255 {
-                    return Err(IntoColorError::IntConversion);
-                }
-            }
-            Ok(Self {
-                red: slice[0] as u8, 
-                green: slice[1] as u8, 
-                blue: slice[2] as u8
-            })
-        }
-
+        check(&slice)?;
+        Ok(Self {
+            red: slice[0] as u8, 
+            green: slice[1] as u8, 
+            blue: slice[2] as u8
+        })
     }
 }
 
